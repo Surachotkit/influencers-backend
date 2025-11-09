@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
     postgres:
-        image: postgres:16
+        image: postgres:17
         container_name: influencers_db
         restart: unless-stopped
         environment:
@@ -10,26 +10,27 @@ services:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
         ports:
-          - "5432:5432"
+          - "55432:5432"
         volumes:
           - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+          test: ["CMD-SHELL", "pg_isready -U postgres -d influencers_db"]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+          start_period: 5s
     app:
       build: .
       ports:
-        - "4000:4000"
+        - "4040:4040"
+      # context: .
+      # dockerfile: Dockerfile
       environment:
-        - PORT=4000
+        - PORT=4040
         - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/influencers_db
       depends_on:
         postgres:
           condition: service_healthy
  
-    # healthcheck:
-    #   test: ["CMD-SHELL", "pg_isready -U postgres -d influencers_db"]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 5
-    #   start_period: 5s
-
 volumes:
   postgres_data:

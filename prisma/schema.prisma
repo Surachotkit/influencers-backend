@@ -1,0 +1,65 @@
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  fullName    String
+  email       String         @unique
+  password    String
+  role        Role           @default(User)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  influencers Influencer[]
+}
+
+
+model Influencer {
+  id                      Int       @id @default(autoincrement())
+  recordId                Int?      
+  recordType              String?   
+  fullName                String
+  preferredName           String?
+  gender                  String?
+  birthDate               DateTime?
+  email                   String?
+  phone                   String?
+  city                    String?
+  country                 String?
+  occupation              String?
+  influencerCategory      String?
+  primaryPlatform         String?
+  followersCount          Int?
+  totalFollowersCount     Int?
+  engagementRate          Float?
+  engagementRateTier      String?
+  interests               String[]  // Array (PostgreSQL)
+  notes                   String?
+  secondaryPlatform       String?
+  secondaryFollowersCount Int?
+  averageMonthlyReach     Int?
+  collaborationStatus     String?
+  languages               String[]
+  portfolioUrl            String?
+  lastContactDate         DateTime?
+
+  // ผู้ใช้ที่สร้าง influencer นี้
+  createdBy               Int?
+  createdByUser           User?     @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+}
+
+enum Role {
+  Admin
+  Curator
+  User
+}
