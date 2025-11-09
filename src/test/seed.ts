@@ -1,40 +1,33 @@
 import { PrismaClient } from "@prisma/client";
+import influencersData from "./influencers.json";
+
 const prisma = new PrismaClient();
 
 async function seed() {
   // สร้างผู้ใช้ admin
-  const admin = await prisma.user.create({
+  await prisma.user.create({
     data: {
-      fullName: "Admin User",
-      email: "admin@example.com",
-      password: "hashedpassword",
+      fullName: "Admin123",
+      email: "admin@influencer.com",
+      password: "123456",
       role: "Admin",
     },
   });
 
-  // สร้าง influencer ตัวอย่าง
-  await prisma.influencer.create({
-    data: {
-      recordId: 1,
-      recordType: "influencer",
-      fullName: "Lisa Kim",
-      preferredName: "Lisa",
-      gender: "Female",
-      city: "Bangkok",
-      country: "Thailand",
-      influencerCategory: "Fashion",
-      primaryPlatform: "Instagram",
-      followersCount: 2000000,
-      totalFollowersCount: 2500000,
-      engagementRate: 4.5,
-      engagementRateTier: "High",
-      interests: ["fashion", "beauty", "travel"],
-      languages: ["Thai", "English"],
-      collaborationStatus: "Open",
-      portfolioUrl: "https://instagram.com/lisakim",
-      createdByUser: { connect: { id: admin.id } },
-    },
-  });
+  for (const data of influencersData) {
+    console.log("🚀 ~ seed ~ data:", data);
+    await prisma.influencer.create({
+      data: {
+        ...data,
+        recordId: data.recordId,
+        birthDate: data.birthDate ? new Date(data.birthDate) : null,
+        lastContactDate: data.lastContactDate
+          ? new Date(data.lastContactDate)
+          : null,
+      },
+    });
+  }
+  console.log("✅ Seeded successfully!", influencersData.length);
 }
 
 seed()
