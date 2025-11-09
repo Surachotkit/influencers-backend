@@ -15,7 +15,6 @@ async function seed() {
   });
 
   for (const data of influencersData) {
-    console.log("🚀 ~ seed ~ data:", data);
     await prisma.influencer.create({
       data: {
         ...data,

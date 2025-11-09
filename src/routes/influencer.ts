@@ -3,7 +3,6 @@ import { InfluencerController } from '../controllers/influencer';
 
 const router = Router();
 const controller = new InfluencerController();
-console.log("🚀 ~ controller:", controller)
 
 router.post('/', controller.create.bind(controller));
 router.get('/', controller.getAll.bind(controller));
